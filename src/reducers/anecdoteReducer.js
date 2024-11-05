@@ -1,3 +1,5 @@
+import { createSlice } from '@reduxjs/toolkit'
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -9,7 +11,7 @@ const anecdotesAtStart = [
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
-const asObject = (anecdote) => {
+const asObject = anecdote => {
   return {
     content: anecdote,
     id: getId(),
@@ -19,44 +21,27 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'NEW_ANECDOTES':
-      return state.concat(action.payload)
-    case 'VOTE': {
-      const id = action.payload.id
-      const anecdoteVote = state.find((n) => n.id === id)
-      const updateAnecdote = {
-        ...anecdoteVote,
-        votes: anecdoteVote.votes + 1,
-      }
-      return state.map((anecdote) =>
-        anecdote.id === id ? updateAnecdote : anecdote
-      )
-    }
-    default:
-      return state
-  }
-}
-
-// Funcion para crear objeto(Action creators)
-export const createAnecdote = (content) => {
-  return {
-    type: 'NEW_ANECDOTES',
-    payload: {
-      content,
-      id: getId(),
-      votes: 0,
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      const content = action.payload
+      state.push({
+        content,
+        id: getId(),
+        votes: 0,
+      })
     },
-  }
-}
+    toggleVoteOf(state, action) {
+      const id = action.payload
+      const anecdoteVote = state.find(n => n.id === id)
+      if (anecdoteVote) {
+        anecdoteVote.votes += 1
+      }
+    },
+  },
+})
 
-// Funcion Contador de votos en el ID correspondiente
-export const toggleVoteOf = (id) => {
-  return {
-    type: 'VOTE',
-    payload: { id },
-  }
-}
-
-export default reducer
+export const { createAnecdote, toggleVoteOf } = anecdoteSlice.actions
+export default anecdoteSlice.reducer
