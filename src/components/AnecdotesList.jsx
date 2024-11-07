@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { toggleVoteOf } from '../reducers/anecdoteReducer'
+import { voteAnecdote } from '../reducers/anecdoteReducer'
 
 const Anecdote = ({ anecdote, handleClick }) => {
   return (
@@ -15,27 +15,27 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const AnecdotesList = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector((state) => state.anecdotes)
-  const filterAnecdotes = useSelector((state) => state.filter)
+  const anecdotes = useSelector(state => state.anecdotes)
+  const filterAnecdotes = useSelector(state => state.filter)
 
   // ordenar anecdotes por numeros de votos
   const filteredAndSortedAnecdotes = [...anecdotes]
-    .filter((anecdote) =>
+    .filter(anecdote =>
       anecdote.content.toLowerCase().includes(filterAnecdotes.toLowerCase())
     )
     .sort((a, b) => b.votes - a.votes)
 
-  const vote = (id) => {
-    dispatch(toggleVoteOf(id))
+  const vote = (id, content) => {
+    dispatch(voteAnecdote(id, content))
   }
 
   return (
     <ol>
-      {filteredAndSortedAnecdotes.map((anecdote) => (
+      {filteredAndSortedAnecdotes.map(anecdote => (
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => vote(anecdote.id)}
+          handleClick={() => vote(anecdote.id, anecdote.content)}
         />
       ))}
     </ol>

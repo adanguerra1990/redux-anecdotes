@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { setTemporaryNotification } from './reducerNotification'
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -42,6 +43,23 @@ const anecdoteSlice = createSlice({
     },
   },
 })
+
+export const voteAnecdote = (id, content) => {
+  return async dispatch => {
+    dispatch(anecdoteSlice.actions.toggleVoteOf(id))
+    dispatch(setTemporaryNotification(`You voted for: "${content}"`, 5))
+  }
+}
+
+export const addAnecdoteNotification = content => {
+  return async dispatch => {
+    console.log(content)
+    dispatch(anecdoteSlice.actions.createAnecdote(content))
+    dispatch(
+      setTemporaryNotification(`You added a new anecdote: "${content}"`, 5)
+    )
+  }
+}
 
 export const { createAnecdote, toggleVoteOf } = anecdoteSlice.actions
 export default anecdoteSlice.reducer
