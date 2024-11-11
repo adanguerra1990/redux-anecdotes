@@ -7,11 +7,11 @@ const anecdoteSlice = createSlice({
   initialState: [],
   reducers: {
     toggleVoteOf(state, action) {
-      const id = action.payload
-      const anecdoteVote = state.find(n => n.id === id)
-      if (anecdoteVote) {
-        anecdoteVote.votes += 1
-      }
+      const updateAnecdote = action.payload
+
+      return state.map(anecdote =>
+        anecdote.id === updateAnecdote.id ? updateAnecdote : anecdote
+      )
     },
     setAnecdotes(state, action) {
       return action.payload
@@ -45,9 +45,13 @@ export const createAnecdote = content => {
   }
 }
 
-export const voteAnecdote = (id, content) => {
+export const voteAnecdote = (id, content, votes) => {
   return async dispatch => {
-    dispatch(anecdoteSlice.actions.toggleVoteOf(id))
+    const updateAnecdote = await anecdotesServices.updateVote(id, {
+      content,
+      votes: votes + 1,
+    })
+    dispatch(toggleVoteOf(updateAnecdote))
     dispatch(setTemporaryNotification(`You voted for: "${content}"`, 5))
   }
 }

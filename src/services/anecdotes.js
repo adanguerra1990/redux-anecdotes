@@ -4,15 +4,18 @@ const baseUrl = 'http://localhost:3001/anecdotes'
 
 const getAll = async () => {
   const response = await axios.get(baseUrl)
-  console.log(response.data)
   return response.data
 }
 
 const createNew = async (content, votes = 0) => {
   const object = { content, votes }
   const response = await axios.post(baseUrl, object)
-  console.log(response.data)
   return response.data
 }
 
-export default { getAll, createNew }
+const updateVote = async (id, updateAnecdote) => {
+  const response = await axios.put(`${baseUrl}/${id}`, updateAnecdote)
+  return response.data
+}
+
+export default { getAll, createNew, updateVote }

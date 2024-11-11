@@ -25,8 +25,8 @@ const AnecdotesList = () => {
     )
     .sort((a, b) => b.votes - a.votes)
 
-  const vote = (id, content) => {
-    dispatch(voteAnecdote(id, content))
+  const vote = (id, content, votes) => {
+    dispatch(voteAnecdote(id, content, votes))
   }
 
   return (
@@ -35,7 +35,9 @@ const AnecdotesList = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => vote(anecdote.id, anecdote.content)}
+          handleClick={() =>
+            vote(anecdote.id, anecdote.content, anecdote.votes)
+          }
         />
       ))}
     </ol>
